@@ -1,13 +1,14 @@
 import React, {FC, useState, useEffect, useRef} from 'react'
 import Head from 'next/head'
 import styled from 'styled-components'
+import useInterval from 'use-interval'
 import { TweenMax } from 'gsap'
-import CSSPlugin from 'gsap/CSSPlugin'
 const Index: FC = () => {
   const w = 25
   const h = 25
-  let followerX = 0
-  let followerY = 0
+  const delay = 2
+  const [followerX, setFollowerX] = useState(0)
+  const [followerY, setFollowerY] = useState(0)
   const [x, setX] = useState(0)
   const [y, setY] = useState(0)
   const cursorRef = useRef(null)
@@ -16,18 +17,15 @@ const Index: FC = () => {
       setX(e.pageX)
       setY(e.pageY)
     })
-    TweenMax.to({}, .001, {
-      repeat: -1,
-      onUpdate() {
-        followerX += (x - followerX) / 10;
-        followerY += (y - followerY) / 10;
-        TweenMax.to(cursorRef.current, {
-          top: followerX - (w / 2),
-          left: followerY - (h / 2)
-        })
-      }
-    })
   }, [])
+  useInterval(() => {
+    setFollowerX(followerX + (x - followerX) / delay)
+    setFollowerY(followerY + (y - followerY) / delay)
+    TweenMax.to(cursorRef.current, {
+      x: followerX - (w / 2),
+      y: followerY - (h / 2)
+    })
+  }, 10)
   return (
     <>
       <Head>
@@ -35,6 +33,7 @@ const Index: FC = () => {
       </Head>
       <FullScreen>
         <Cursor ref={cursorRef} w={w} h={h} />
+        
       </FullScreen>
     </>
   )
