@@ -16,7 +16,7 @@ const Index: FC = () => {
 }
 
 const PageContent = styled.div`
-  padding: 80px 0;
+  padding: 80px 24px;
 `
 
 export default Index
